@@ -1,3 +1,7 @@
+import time
+from random import randint
+
+
 class LinkedList:
     # The __Node class is used internally by the LinkedList class. It is
     # invisible from outside this class due to the two underscores
@@ -147,16 +151,16 @@ class LinkedList:
     def split(self, index):
         new_lst = LinkedList()
 
-        cursor = self.first.getNext()
+        cursor = self.first
 
         for i in range(index):
             cursor = cursor.getNext()
 
-        new_lst.first = cursor
+        new_lst.first.setNext(cursor.getNext())
         cursor.setNext(None)
 
         new_lst.numItems = self.numItems - index
-        self.numItems -= new_lst.numItems
+        self.numItems = index
 
         return new_lst
 
@@ -189,18 +193,25 @@ class LinkedList:
         if self.numItems == 1:
             return list
 
-        right = self.split(self.numItems // 2)
+        other = self.split(self.numItems // 2)
 
         self.merge_sort()
-        right.merge_sort()
+        other.merge_sort()
 
-        left.merge(right)
+        self.merge(other)
+
+
+def generate_random_list(length):
+    return LinkedList([randint(0, length) for i in range(length)])
 
 
 def main():
-    test_list = LinkedList([2, 5, 3, 1])
-    test_list.merge_sort()
-    print(test_list)
+    random_list = generate_random_list(1000000)
+    print(f"")
+    t = time.perf_counter()
+    random_list.merge_sort()
+    print(f" time ({time.perf_counter() - t}s)")
+
 
     # lst = LinkedList()
     #
