@@ -22,12 +22,14 @@ class LinkedList:
         def setNext(self, next):
             self.next = next
 
-    def __init__(self, contents=[]):
+    def __init__(self, contents=None):
         # Here we keep a reference to the first node in the linked list
         # and the last item in the linked list. The both point to a
         # dummy node to begin with. This dummy node will always be in
         # the first position in the list and will never contain an item.
         # Its purpose is to eliminate special cases in the code below.
+        if contents is None:
+            contents = []
         self.first = LinkedList.__Node(None, None)
         self.last = self.first
         self.numItems = 0
@@ -140,24 +142,23 @@ class LinkedList:
 
     def __repr__(self):
         # This is left as an exercise for the reader.
-        return list(self).__repr__()
+        return f"LinkedList({list(self).__repr__()})"
 
-    @staticmethod
-    def split(self, lst, index):
-        left = LinkedList()
-        right = LinkedList()
+    def split(self, index):
+        new_lst = LinkedList()
 
-        cursor = lst.first.getNext()
+        cursor = self.first.getNext()
 
         for i in range(index):
-            left.append(cursor.getItem())
             cursor = cursor.getNext()
 
-        while cursor is not None:
-            right.append(cursor.getItem())
-            cursor = cursor.getNext()
+        new_lst.first = cursor
+        cursor.setNext(None)
 
-        return left, right
+        new_lst.numItems = self.numItems - index
+        self.numItems -= new_lst.numItems
+
+        return new_lst
 
     def merge(self, lst, by=lambda a, b: a < b):
         self_cursor = self.first.getNext()
@@ -184,20 +185,21 @@ class LinkedList:
         self.last = new_lst.last
         self.numItems = new_lst.numItems
 
-    def merge_sort(self, arr=None):
-            arr = self
+    def merge_sort(self):
+        if self.numItems == 1:
+            return list
 
-        if len(arr) < 1:
-            return arr
+        right = self.split(self.numItems // 2)
 
-        left, right = self.split(arr, 1)
-        left = left.merge_sort()
-        right = right.merge_sort()
+        self.merge_sort()
+        right.merge_sort()
+
+        left.merge(right)
 
 
 def main():
-    test_list = LinkedList([1, 2, 3, 4])
-    test_list.merge(LinkedList([1, 2, 3, 4]))
+    test_list = LinkedList([2, 5, 3, 1])
+    test_list.merge_sort()
     print(test_list)
 
     # lst = LinkedList()
