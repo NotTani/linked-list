@@ -206,12 +206,22 @@ def generate_random_list(length):
 
 
 def main():
-    random_list = generate_random_list(1000000)
-    print(f"")
-    t = time.perf_counter()
-    random_list.merge_sort()
-    print(f" time ({time.perf_counter() - t}s)")
+    li = generate_random_list(20000)
+    li.merge_sort()
+    print(li)
 
+    results = []
+    for length in range(100, 100000 + 100, 100):
+        random_list = generate_random_list(length)
+        print(f"Generating list of length {length}")
+        t = time.perf_counter()
+        random_list.merge_sort()
+        results.append((length, time.perf_counter() - t))
+
+    with open('results.csv', 'w') as f:
+        f.write("length,time\n")
+        for result in results:
+            f.write(f"{result[0]},{result[1]}\n")
 
     # lst = LinkedList()
     #
